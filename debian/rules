@@ -1,0 +1,49 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE=1
+export DH_OPTIONS
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	touch $@
+
+build: build-stamp
+
+build-stamp: configure
+	dh_testdir
+	touch build_stamp
+
+clean:
+	dh_clean
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp configure-stamp
+	rm -rf tmp
+	rm -rf debian/nonvc
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_installdirs
+	mkdir -p debian/novnc/usr/share/novnc
+	cp -r app core include utils vendor vnc.html vnc_lite.html debian/novnc/usr/share/novnc/
+	cd debian/novnc/usr/share/novnc && ln -s vnc_lite.html vnc_auto.html
+
+binary-indep:
+
+binary-arch: install
+	dh_testdir
+	dh_testroot
+	dh_installdocs
+	dh_installchangelogs
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb -- -Zgzip
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install

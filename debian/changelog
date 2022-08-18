@@ -1,0 +1,149 @@
+novnc (1:1.3.0-102) unstable; urgency=low
+
+  * iframe w/o clipboard read permission: hide paste clipboard button
+
+ -- Maxim Monin <maximmonin@gmail.com>  Thu, 11 Aug 2022 17:00:00 +0300
+
+novnc (1:1.3.0-101) unstable; urgency=low
+
+  * autofocus to terminal window added
+
+ -- Maxim Monin <maximmonin@gmail.com>  Wed, 10 Aug 2022 08:00:00 +0300
+
+novnc (1:1.3.0-100) unstable; urgency=low
+
+  * novnc client version is 1.3.0
+  * added paste from clipboard button
+  * status bar data can be modified by server,ipv4,ipv6 query parameters
+  * title changed to VNC Console
+
+ -- Maxim Monin <maximmonin@gmail.com>  Tue, 09 Aug 2022 16:30:00 +0300
+
+novnc (1:1.0.0-5) unstable; urgency=medium
+
+  * Add net-tools as depends, needed for launch.sh (Closes: #932611).
+
+ -- Thomas Goirand <zigo@debian.org>  Wed, 29 Dec 2021 13:54:20 +0100
+
+novnc (1:1.0.0-4) unstable; urgency=medium
+
+  * Do not create symlink to swfobject.js (Closes: #924153).
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 28 Dec 2021 18:49:17 +0100
+
+novnc (1:1.0.0-3) unstable; urgency=medium
+
+  * Fix symlink to swfobject.js (Closes: #924153)
+
+ -- Michal Arbet <michal.arbet@ultimum.io>  Thu, 12 Mar 2020 12:31:52 +0100
+
+novnc (1:1.0.0-2) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * Running wrap-and-sort -bast
+  * Use debhelper-compat instead of debian/compat.
+
+  [ Thomas Goirand ]
+  * Removed python 2 support (Closes: #934930).
+
+ -- Thomas Goirand <zigo@debian.org>  Mon, 26 Aug 2019 23:42:51 +0200
+
+novnc (1:1.0.0-1) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * d/copyright: Use https in Format
+  * Removing gbp.conf, not used anymore or should be specified in the
+    developers dotfiles
+  * d/control: Use team+openstack@tracker.debian.org as maintainer
+
+  [ David Rabel ]
+  * d/changelog: Fix wrong entry.
+  * d/copyright: Fixed. Was totally broken.
+  * d/novnc.install: Don't install extra license file.
+  * d/patches/ : Fix typo.
+  * d/control, d/watch: Update upstream URL.
+
+  [ Thomas Goirand ]
+  * New upstream release (Closes: #847122):
+    - Drop now useless patches: utils-launch.patch and
+      adds_support_for_secure_attribute_on_token_cookie.patch
+  * Do not override dh_clean anymore.
+  * Fixed patch to package novnc as python package.
+  * Rewrite debian/novnc.install and part of debian/rules to adapt to the new
+    upstream release..
+  * Add patch for Python 3 compat (print statements).
+  * Hack po/po2js to use debian/getopt.js.
+  * Update debian/copyright file to reality of 1.0.0.
+  * Fixed debian/rules to use new upstream URL.
+  * Add Python 3 support.
+  * Document license for vendor/pako/lib/zlib/.
+  * Removed runtime dependency on libjs-swfobject, which is only for old web
+    browsers anyway (Closes: #908693).
+  * Add compatibility symlink to vnc_auto.html so that it works with old Nova
+    setup without any modification.
+  * Delete /usr/share/novnc/vendor/browser-es-module-loader/.npmignore during
+    the file install.
+  * Fixed shebang for b64-to-binary.pl.
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 15 May 2018 11:28:13 +0200
+
+novnc (1:0.4+dfsg+1+20131010+gitf68af8af3d-7) unstable; urgency=medium
+
+  [ David Rabel ]
+  * Suggests instead of recommends python-nova (Closes: #867389).
+
+  [ Thomas Goirand ]
+  * Run wrap-and-sort -bast.
+  * Standards-Version is now 4.1.3.
+  * VCS fields now pointing to Salsa.
+  * Using debhelper 11.
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 25 Jan 2018 13:06:47 +0000
+
+novnc (1:0.4+dfsg+1+20131010+gitf68af8af3d-6) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * Fixed homepage (https).
+  * Fixed VCS URLs (https).
+  * d/rules: Changed UPSTREAM_GIT protocol to https
+  * d/copyright: Changed source URL to https protocol
+  * d/s/options: extend-diff-ignore of .gitreview
+  * d/control: Using OpenStack's Gerrit as VCS URLs.
+
+  [ Thomas Goirand ]
+  * Applied patch contributed in launchpad (Closes: #837997).
+  * Ran wrap-and-sort -t -a.
+  * Build-depends on dh-python.
+  * Removed Pre-Depends: dpkg (>= 1.15.6~).
+  * Removed inactive uploaders.
+  * Standards-Version: 3.9.8 (no change).
+
+ -- Thomas Goirand <zigo@debian.org>  Sun, 09 Oct 2016 01:00:48 +0200
+
+novnc (1:0.4+dfsg+1+20131010+gitf68af8af3d-4) unstable; urgency=high
+
+  * Adds security patch (Closes: #778618):
+    adds_support_for_secure_attribute_on_token_cookie.patch
+  * Adds a source.lintian-overrides for include/logo.js. This is a logo, and
+    not code source, so I believe it should be fine. Moreover, the file in
+    include/logo.js.png is the source, and running "base64 include/logo.js.png"
+    generates the same data, so it is my point of view that we're in the case
+    of a false positive. If one difers, please provide the patch to generate
+    the logo.js out of the logo.js.png file.
+
+ -- Thomas Goirand <zigo@debian.org>  Mon, 02 Mar 2015 17:27:07 +0100
+
+novnc (1:0.4+dfsg+1+20131010+gitf68af8af3d-3) unstable; urgency=medium
+
+  * Drops python-nova as a direct dependency, and only puts it as a
+    Recommends:.
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 12 Feb 2015 22:52:35 +0100
+
+novnc (1:0.4+dfsg+1+20131010+gitf68af8af3d-2) unstable; urgency=medium
+
+  * Do not create nova user and group if they already exist.
+
+ -- Thomas Goirand <zigo@debian.org>  Wed, 25 Dec 2013 16:47:06 +0800
+
+# For older changelog entries, run 'apt-get changelog python3-novnc'

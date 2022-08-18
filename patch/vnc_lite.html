@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!--
+    noVNC example: lightweight example using minimal UI and features
+
+    This is a self-contained file which doesn't import WebUtil or external CSS.
+
+    Copyright (C) 2019 The noVNC Authors
+    noVNC is licensed under the MPL 2.0 (see LICENSE.txt)
+    This file is licensed under the 2-Clause BSD license (see LICENSE.txt).
+
+    Connect parameters are provided in query string:
+        http://example.com/?host=HOST&port=PORT&scale=true
+    -->
+    <title>VNC Console</title>
+
+    <meta charset="utf-8">
+
+    <!-- Icons (see Makefile for what the sizes are for) -->
+    <link rel="icon" sizes="16x16" type="image/png" href="app/images/icons/novnc-16x16.png">
+    <link rel="icon" sizes="24x24" type="image/png" href="app/images/icons/novnc-24x24.png">
+    <link rel="icon" sizes="32x32" type="image/png" href="app/images/icons/novnc-32x32.png">
+    <link rel="icon" sizes="48x48" type="image/png" href="app/images/icons/novnc-48x48.png">
+    <link rel="icon" sizes="60x60" type="image/png" href="app/images/icons/novnc-60x60.png">
+    <link rel="icon" sizes="64x64" type="image/png" href="app/images/icons/novnc-64x64.png">
+    <link rel="icon" sizes="72x72" type="image/png" href="app/images/icons/novnc-72x72.png">
+    <link rel="icon" sizes="76x76" type="image/png" href="app/images/icons/novnc-76x76.png">
+    <link rel="icon" sizes="96x96" type="image/png" href="app/images/icons/novnc-96x96.png">
+    <link rel="icon" sizes="120x120" type="image/png" href="app/images/icons/novnc-120x120.png">
+    <link rel="icon" sizes="144x144" type="image/png" href="app/images/icons/novnc-144x144.png">
+    <link rel="icon" sizes="152x152" type="image/png" href="app/images/icons/novnc-152x152.png">
+    <link rel="icon" sizes="192x192" type="image/png" href="app/images/icons/novnc-192x192.png">
+    <!-- Firefox currently mishandles SVG, see #1419039
+    <link rel="icon" sizes="any" type="image/svg+xml" href="app/images/icons/novnc-icon.svg">
+    -->
+    <!-- Repeated last so that legacy handling will pick this -->
+    <link rel="icon" sizes="16x16" type="image/png" href="app/images/icons/novnc-16x16.png">
+
+    <!-- Apple iOS Safari settings -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <!-- Home Screen Icons (favourites and bookmarks use the normal icons) -->
+    <link rel="apple-touch-icon" sizes="60x60" type="image/png" href="app/images/icons/novnc-60x60.png">
+    <link rel="apple-touch-icon" sizes="76x76" type="image/png" href="app/images/icons/novnc-76x76.png">
+    <link rel="apple-touch-icon" sizes="120x120" type="image/png" href="app/images/icons/novnc-120x120.png">
+    <link rel="apple-touch-icon" sizes="152x152" type="image/png" href="app/images/icons/novnc-152x152.png">
+
+    <style>
+
+        body {
+            margin: 0;
+            background-color: dimgrey;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        html {
+            height: 100%;
+        }
+
+        #top_bar {
+            background-color: #6e84a3;
+            color: white;
+            font: bold 12px Helvetica;
+            padding: 6px 5px 4px 5px;
+            border-bottom: 1px outset;
+        }
+        #status {
+            text-align: center;
+        }
+        #sendCtrlAltDelButton {
+            position: fixed;
+            top: 0px;
+            right: 0px;
+            border: 1px outset;
+            padding: 5px 5px 4px 5px;
+            cursor: pointer;
+        }
+        #pasteClipboardButton {
+            position: fixed;
+            top: 0px;
+            right: 100px;
+            border: 1px outset;
+            padding: 5px 5px 4px 5px;
+            cursor: pointer;
+        }
+
+        #screen {
+            flex: 1; /* fill remaining space */
+            overflow: hidden;
+        }
+
+    </style>
+
+    <script type="module" crossorigin="anonymous">
+        // RFB holds the API to connect and communicate with a VNC server
+        import RFB from './core/rfb.js';
+
+        let rfb;
+        let desktopName;
+        let info = '';
+
+        // When this function is called we have
+        // successfully connected to a server
+        function connectedToServer(e) {
+            status("Connected to " + desktopName);
+        }
+
+        // This function is called when we are disconnected
+        function disconnectedFromServer(e) {
+            if (e.detail.clean) {
+                status("Disconnected from " + desktopName);
+            } else {
+                status("Something went wrong, connection is closed");
+            }
+        }
+
+        // When this function is called, the server requires
+        // credentials to authenticate
+        function credentialsAreRequired(e) {
+            const password = prompt("Password Required:");
+            rfb.sendCredentials({ password: password });
+        }
+
+        // When this function is called we have received
+        // a desktop name from the server
+        function updateDesktopName(e) {
+            desktopName = readQueryVariable('title', e.detail.name);
+            desktopName = readQueryVariable('server', desktopName);
+            document.title = desktopName + ' - VNC Console';
+        }
+
+        // Since most operating systems will catch Ctrl+Alt+Del
+        // before they get a chance to be intercepted by the browser,
+        // we provide a way to emulate this key sequence.
+        function sendCtrlAltDel() {
+            rfb.sendCtrlAltDel();
+            return false;
+        }
+
+        function pasteClipboard() {
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                navigator.clipboard.readText()
+                .then((clipText) => {
+                    rfb.focus();
+                    rfb.clipboardPasteToTTY(clipText);
+                })
+                .catch((e) => {});
+            }
+            return false;
+        }
+
+        // Show a status text in the top bar
+        function status(text) {
+            if (info) document.getElementById('status').textContent = text + ', ' + info;
+            else document.getElementById('status').textContent = text;
+        }
+
+        // This function extracts the value of one variable from the
+        // query string. If the variable isn't defined in the URL
+        // it returns the default value instead.
+        function readQueryVariable(name, defaultValue) {
+            // A URL with a query parameter can look like this (But will most probably get logged on the http server):
+            // https://www.example.com?myqueryparam=myvalue
+            //
+            // For privacy (Using a hastag #, the parameters will not be sent to the server)
+            // the url can be requested in the following way:
+            // https://www.example.com#myqueryparam=myvalue&password=secreatvalue
+            //
+            // Even Mixing public and non public parameters will work:
+            // https://www.example.com?nonsecretparam=example.com#password=secreatvalue
+            //
+            // Note that we use location.href instead of location.search
+            // because Firefox < 53 has a bug w.r.t location.search
+            const re = new RegExp('.*[?&]' + name + '=([^&#]*)'),
+                  match = ''.concat(document.location.href, window.location.hash).match(re);
+
+            if (match) {
+                // We have to decode the URL since want the cleartext value
+                return decodeURIComponent(match[1]);
+            }
+
+            return defaultValue;
+        }
+
+        document.getElementById('sendCtrlAltDelButton').onclick = sendCtrlAltDel;
+        document.getElementById('pasteClipboardButton').onclick = pasteClipboard;
+        if (! navigator.clipboard) {
+            document.getElementById('pasteClipboardButton').hidden = true;
+        }
+        navigator.permissions.query({name: "clipboard-read"})
+        .then((result) => {
+            if (result.state === "denied") {
+                document.getElementById('pasteClipboardButton').hidden = true;
+            }
+        })
+        .catch(() => {/* Do nothing */});
+
+        // Read parameters specified in the URL query string
+        // By default, use the host and port of server that served this file
+        const host = readQueryVariable('host', window.location.hostname);
+        let port = readQueryVariable('port', window.location.port);
+        const password = readQueryVariable('password');
+        const path = readQueryVariable('path', 'websockify');
+
+        // | | |         | | |
+        // | | | Connect | | |
+        // v v v         v v v
+
+        status("Connecting");
+
+        // Build the websocket URL used to connect
+        let url;
+        if (window.location.protocol === "https:") {
+            url = 'wss';
+        } else {
+            url = 'ws';
+        }
+        url += '://' + host;
+        if(port) {
+            url += ':' + port;
+        }
+        url += '/' + path;
+
+        // Creating a new RFB object will start a new connection
+        rfb = new RFB(document.getElementById('screen'), url,
+                      { credentials: { password: password } });
+
+        // Add listeners to important events from the RFB module
+        rfb.addEventListener("connect",  connectedToServer);
+        rfb.addEventListener("disconnect", disconnectedFromServer);
+        rfb.addEventListener("credentialsrequired", credentialsAreRequired);
+        rfb.addEventListener("desktopname", updateDesktopName);
+
+        // Set parameters that can be changed on an active connection
+        rfb.viewOnly = readQueryVariable('view_only', false);
+        rfb.scaleViewport = readQueryVariable('scale', false);
+
+        let ipv4 = readQueryVariable('ipv4', '');
+        let ipv6 = readQueryVariable('ipv6', '');
+        if (ipv4) info = 'IPv4: ' + ipv4;
+        if (ipv6) {
+          if (info) info = info + ', IPv6: ' + ipv6;
+          else info = 'IPv6: ' + ipv6;
+        }
+        rfb.focus();
+    </script>
+</head>
+
+<body>
+    <div id="top_bar">
+        <div id="status">Loading</div>
+        <div id="pasteClipboardButton">Paste Clipboard</div>
+        <div id="sendCtrlAltDelButton">Send CtrlAltDel</div>
+    </div>
+    <div id="screen">
+        <!-- This is where the remote screen will appear -->
+    </div>
+</body>
+</html>

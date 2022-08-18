@@ -1,0 +1,20 @@
+FROM ubuntu:focal AS build
+
+ARG NOVNC_VERSION="1.3.0"
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get -y dist-upgrade && \
+    mkdir -p BUILD && \
+    apt-get -y install build-essential debhelper devscripts dpkg-dev fakeroot git ant default-jdk sharutils wget
+
+RUN wget --no-check-certificate -qO- https://github.com/novnc/noVNC/archive/refs/tags/v$NOVNC_VERSION.tar.gz | tar -xvz -C /
+
+RUN cd /noVNC-$NOVNC_VERSION && mv app core utils vendor vnc.html vnc_lite.html ../BUILD
+COPY /debian /BUILD/debian
+RUN cp /noVNC-$NOVNC_VERSION/README.md /BUILD/debian/README.debian
+COPY /patch /BUILD/
+RUN cd /BUILD/ && debuild -us -uc -b
+RUN find / -name "*.deb" -maxdepth 1 -type f -print
+
+FROM scratch
+COPY --from=build /*.deb /

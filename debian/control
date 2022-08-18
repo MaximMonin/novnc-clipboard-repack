@@ -1,0 +1,20 @@
+Source: novnc
+Section: web
+Priority: optional
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.6
+
+Package: novnc
+Architecture: all
+Depends: adduser, net-tools, python3-novnc, python3-numpy, websockify
+Suggests: python-nova
+Homepage: https://github.com/novnc/noVNC
+Description: HTML5 VNC client - daemon and programs
+ noVNC is a HTML5 VNC (WebSockets, Canvas) with encryption (wss://) support
+ client that runs well in any modern browser including mobile browsers
+ (iPhone/iPad and Android). More than 16 companies/projects have integrated
+ noVNC into their products including Ganeti Web Manager, OpenStack, and
+ OpenNebula.
+ .
+ This package contains the daemon and programs.
