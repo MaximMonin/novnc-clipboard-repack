@@ -31,12 +31,13 @@ export default class Clipboard {
     }
 
     _handleKeyDown(e) {
-        if (e.ctrlKey && e.which === 86 /* ctrl-v */ || e.shiftKey && e.which === 45 /* shift-Ins */) {
-            e.preventDefault();
-            if (navigator.clipboard.readText) {
-                navigator.clipboard.readText().then((clipText) => {this.onpasteTTY(clipText);}).catch(() => {/* Do nothing */});
-            }
-        }
+//  In graphical Environment can be double paste (vm clipboard + external clipboard) so disabling it
+//        if (e.ctrlKey && e.which === 86 /* ctrl-v */ || e.shiftKey && e.which === 45 /* shift-Ins */) {
+//            e.preventDefault();
+//            if (navigator.clipboard.readText) {
+//                navigator.clipboard.readText().then((clipText) => {this.onpasteTTY(clipText);}).catch(() => {/* Do nothing */});
+//            }
+//        }
     }
 
     // ===== PUBLIC METHODS =====

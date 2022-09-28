@@ -5,5 +5,5 @@
 
 ## Known issues
 
-1. Firefox do not support yet navigator.clipboard.readText method so paste does not work.
-2. noVNC 1.3.0 dropped support Internet Explorer.
+1. noVNC 1.3.0 dropped support Internet Explorer.
+2. Firefox still has partial support of navigator.clipboard.readText method. In version 103+ user can setup about:config: dom.events.asyncClipboard.readText option = true
