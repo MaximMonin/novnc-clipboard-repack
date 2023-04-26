@@ -2,8 +2,8 @@ Source: novnc
 Section: web
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
-Build-Depends: debhelper (>= 9)
-Standards-Version: 3.9.6
+Build-Depends: debhelper (>= 10)
+Standards-Version: 4.0.0
 
 Package: novnc
 Architecture: all

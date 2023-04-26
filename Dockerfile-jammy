@@ -1,11 +1,10 @@
 FROM ubuntu:jammy AS build
 
-ARG NOVNC_VERSION="1.3.0"
+ARG NOVNC_VERSION="1.4.0"
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get -y dist-upgrade && \
-    mkdir -p BUILD && \
-    apt-get -y install build-essential debhelper devscripts dpkg-dev fakeroot git ant default-jdk sharutils wget
+RUN apt update && mkdir -p BUILD && \
+    apt -y install build-essential debhelper devscripts dpkg-dev fakeroot git sharutils wget
 
 RUN wget --no-check-certificate -qO- https://github.com/novnc/noVNC/archive/refs/tags/v$NOVNC_VERSION.tar.gz | tar -xvz -C /
 
