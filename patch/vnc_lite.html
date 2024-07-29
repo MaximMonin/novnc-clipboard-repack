@@ -221,13 +221,13 @@
         })
         .catch(() => {/* Do nothing */});
 
-        // Firefox still has partial support of navigator.clipboard.readText method
-        // firefox 103+ version can use about:config option dom.events.asyncClipboard.readText = true (default is false)
+        // Firefox before version 127 had partial support of navigator.clipboard.readText method
+        // Firefox 103+ version can use about:config option dom.events.asyncClipboard.readText = true (default is false)
         let _browser = detectBrowser();
         if (_browser.firefox && _browser.version < 103) {
           document.getElementById('pasteClipboardButton').hidden = true
         }
-        if (_browser.firefox && _browser.version >= 103) {
+        if (_browser.firefox && _browser.version >= 103 && _browser.version < 127) {
           document.getElementById('pasteClipboardButton').title="Firefox can Paste Clipboard only if dom.events.asyncClipboard.readText option = true (navigate about:config for changing)"
         }
 

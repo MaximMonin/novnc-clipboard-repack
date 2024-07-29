@@ -1,3 +1,11 @@
+novnc (1:1.5.0-100) unstable; urgency=low
+
+  * novnc client version is 1.5.0
+  * clipboard patch to 1.5.0 applied
+  * Firefox 127+ now support paste from clipboard
+
+ -- Maxim Monin <maximmonin@gmail.com>  Mon, 29 Jul 2024 18:00:00 +0300
+
 novnc (1:1.4.0-100) unstable; urgency=low
 
   * novnc client version is 1.4.0
