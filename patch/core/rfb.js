@@ -541,11 +541,15 @@ export default class RFB extends EventTargetMixin {
             }
 
             let isSpecial = '~!@#$%^&*()_+{}|:"<>?'.includes(c);
-            if (isSpecial) {
+            let isUpperCase = (/[A-Z]/.test(c)); // only for english letters
+            if (isUpperCase) {
+                c = c.toLowerCase();
+            }
+            if (isSpecial || isUpperCase) {
                 rfb.sendKey(KeyTable.XK_Shift_L, "ShiftLeft", true);
             }
             rfb._canvas.dispatchEvent(new KeyboardEvent('keydown', {'key': c}));
-            if (isSpecial) {
+            if (isSpecial || isUpperCase) {
                 rfb.sendKey(KeyTable.XK_Shift_L, "ShiftLeft", false);
             }
         }

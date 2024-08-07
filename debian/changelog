@@ -1,3 +1,10 @@
+novnc (1:1.5.0-101) unstable; urgency=low
+
+  * Fixing issue with pasting lowercased characters
+  * (due to capslock patch in novnc 1.5.0)
+
+ -- Maxim Monin <maximmonin@gmail.com>  Wed, 07 Aug 2024 18:00:00 +0300
+
 novnc (1:1.5.0-100) unstable; urgency=low
 
   * novnc client version is 1.5.0
