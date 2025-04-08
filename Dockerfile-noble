@@ -1,4 +1,4 @@
-FROM ubuntu:jammy AS build
+FROM ubuntu:noble AS build
 
 ARG NOVNC_VERSION="1.6.0"
 

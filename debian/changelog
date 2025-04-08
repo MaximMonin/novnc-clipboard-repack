@@ -1,3 +1,10 @@
+novnc (1:1.6.0-100) unstable; urgency=low
+
+  * novnc client version is 1.6.0
+  * clipboard patch to 1.6.0 applied
+
+ -- Maxim Monin <maximmonin@gmail.com>  Tue, 08 Apr 2025 18:00:00 +0300
+
 novnc (1:1.5.0-101) unstable; urgency=low
 
   * Fixing issue with pasting lowercased characters
